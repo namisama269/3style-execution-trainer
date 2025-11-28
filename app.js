@@ -200,8 +200,8 @@
   const orientationSettings = {};
   const shiftSettings = {};
   Object.keys(PRESETS).forEach((type) => {
-    schemeSettings[type] = safeGetItem(schemeStorageKey(type)) || PRESETS[type].scheme;
-    bufferSettings[type] = safeGetItem(bufferStorageKey(type)) || PRESETS[type].buffer;
+    schemeSettings[type] = safeGetItem(schemeStorageKey(type)) ?? PRESETS[type].scheme;
+    bufferSettings[type] = safeGetItem(bufferStorageKey(type)) ?? PRESETS[type].buffer;
     pairSettings[type] = safeGetItem(pairStorageKey(type)) || '';
     const storedInverse = safeGetItem(inverseStorageKey(type));
     inverseSettings[type] = storedInverse === null ? 'true' : storedInverse;
@@ -211,24 +211,16 @@
     shiftSettings[type] = storedShift === null ? 'true' : storedShift;
   });
 
-  function uniqueLettersFromSchemeText(text) {
+  function blockStartLetters(text) {
     if (!text) return [];
-    const upper = text.toUpperCase();
-    const seen = new Set();
-    const letters = [];
-    for (const ch of upper) {
-      if (!/[A-Z]/.test(ch)) continue;
-      if (seen.has(ch)) continue;
-      seen.add(ch);
-      letters.push(ch);
-    }
-    return letters;
+    const blocks = normalizeSchemeBlocks(text);
+    return blocks.map((block) => block[0]).filter((ch) => /[A-Z]/.test(ch));
   }
 
   function populateBufferOptions(type, preferredLetter) {
     if (!bufferInput) return;
     const schemeText = schemeInput.value || '';
-    const letters = uniqueLettersFromSchemeText(schemeText);
+    const letters = blockStartLetters(schemeText);
     bufferInput.innerHTML = '';
     letters.forEach((letter) => {
       const option = document.createElement('option');
@@ -719,11 +711,10 @@
 
   schemeInput.addEventListener('input', () => {
     const currentType = pieceSelect.value;
-    const previousBuffer = bufferInput ? bufferInput.value : '';
     schemeSettings[currentType] = schemeInput.value;
     safeSetItem(schemeStorageKey(currentType), schemeSettings[currentType]);
     autoResizeScheme();
-    populateBufferOptions(currentType, previousBuffer);
+    populateBufferOptions(currentType);
   });
 
   if (bufferInput) {
