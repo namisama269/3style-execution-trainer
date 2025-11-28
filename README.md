@@ -9,10 +9,10 @@ You are given a sequence of 5 comms to solve for a piece type from your letter s
 <table>
   <tr>
     <td align="center">
-      <img src="images/settings_screen.png?v=2025-11-28" alt="Settings screen" height="420" />
+      <img src="images/settings_screen.png?v=2025-11-29" alt="Settings screen" altitude="420" />
     </td>
     <td align="center">
-      <img src="images/focus_screen.png?v=2025-11-28" alt="Focus screen" height="420" />
+      <img src="images/focus_screen.png?v=2025-11-29" alt="Focus screen" height="420" />
     </td>
   </tr>
 </table>
