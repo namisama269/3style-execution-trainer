@@ -6,6 +6,8 @@ https://namisama269.github.io/3style-execution-trainer/
 
 You are given a sequence of 5 comms to solve for a piece type from your letter scheme and buffer, which when done from a solved cube will bring the cube back to solved, making drilling execution much more effective than having to scramble the cube. The sequence does not contain any trivial repeated or inverse comms.
 
+Idea from: https://youtu.be/5eV2f3rB2EQ?si=nTbe5M9ZdKKJ51P0&t=445
+
 <table>
   <tr>
     <td align="center">
