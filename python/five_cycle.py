@@ -236,7 +236,7 @@ def basic_five_cycle(
             letter_to_block_idx[letter] = idx
     available_pieces = _pieces_after_buffer(blocks, buffer_letter)
     if len(available_pieces) < 4:
-        raise ValueError("Need at least four pieces after the buffer trim.")
+        raise ValueError("Need at least 4 pieces after the buffer piece.")
 
     last_failure = None
     attempts = max(1, int(max_attempts))

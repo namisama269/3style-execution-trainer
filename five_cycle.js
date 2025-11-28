@@ -228,7 +228,7 @@
     }
     const availablePieces = piecesAfterBuffer(blocks, bufferLetter);
     if (availablePieces.length < 4) {
-      throw new Error('Need at least four pieces after trimming with the buffer.');
+      throw new Error('Need at least 4 pieces after the buffer piece.');
     }
 
     const attempts = Math.max(1, Math.floor(maxAttempts));
@@ -352,9 +352,12 @@
   }
 
   function generateFiveCycle(options = {}) {
-    const rngFn = options.rngFn || Math.random;
-    const result = basicFiveCycle({ ...options, rngFn });
-    const rotated = randomShiftComms(result.comm_sequence, rngFn);
+    const { shiftCycle = true, ...rest } = options;
+    const rngFn = rest.rngFn || Math.random;
+    const result = basicFiveCycle({ ...rest, rngFn });
+    const rotated = shiftCycle
+      ? randomShiftComms(result.comm_sequence, rngFn)
+      : [...result.comm_sequence];
     return {
       selected_pieces: result.selected_pieces,
       comm_sequence: rotated,

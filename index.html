@@ -10,6 +10,55 @@
       integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
       crossorigin="anonymous"
     />
+    <style>
+      .focus-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: var(--bs-body-bg, #000);
+        color: var(--bs-body-color, #fff);
+        z-index: 1080;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem 1.5rem;
+        transition: opacity 0.2s ease-in-out;
+        overflow: hidden;
+        touch-action: pan-x;
+      }
+      .focus-overlay.d-none {
+        display: none;
+      }
+      .focus-overlay-content {
+        width: min(900px, 100%);
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+      .focus-pairs {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+      }
+      .focus-pair {
+        font-size: clamp(2.5rem, 10vw, 5rem);
+        font-weight: 700;
+        letter-spacing: 0.1em;
+      }
+      .focus-controls {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+      .focus-instructions {
+        margin-top: auto;
+      }
+    </style>
   </head>
   <body class="bg-dark text-light">
     <div class="container py-4">
@@ -17,8 +66,32 @@
         <div class="col-12 col-lg-8">
           <div class="card bg-body border shadow">
             <div class="card-body">
-              <div class="d-flex align-items-center justify-content-between mb-3 gap-3">
+              <div class="d-flex align-items-center justify-content-between mb-2 gap-3 flex-wrap">
                 <h1 class="h3 mb-0">3-Style Execution Trainer</h1>
+              </div>
+              <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <a
+                  class="btn btn-outline-secondary d-flex align-items-center gap-2"
+                  href="https://github.com/namisama269/3style-execution-trainer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    width="16"
+                    height="16"
+                    role="img"
+                    aria-hidden="true"
+                    focusable="false"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.01.08-2.09 0 0 .67-.21 2.2.82a7.68 7.68 0 0 1 2-.27c.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.08.16 1.89.08 2.09.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"
+                    />
+                  </svg>
+                  Instructions
+                </a>
                 <div class="form-check form-switch m-0">
                   <input
                     class="form-check-input"
@@ -42,6 +115,7 @@
                     <option value="t-center">T-center</option>
                     <option value="obliques">Obliques</option>
                     <option value="midges">Midges</option>
+                    <option value="custom">Custom</option>
                   </select>
                 </div>
 
@@ -49,36 +123,50 @@
                   <label for="method" class="form-label">Method</label>
                   <select id="method" class="form-select">
                     <option value="fiveCycle">5-cycle</option>
-                    <option value="chain">chain</option>
+                    <option value="chain">Chain</option>
                   </select>
                 </div>
 
                 <div class="col-12" id="randomizeOrientationRow">
-                  <div class="d-flex justify-content-end">
-                    <div class="form-check form-switch mb-0">
+                  <div class="d-flex flex-column flex-md-row gap-3 justify-content-end">
+                    <div class="form-check form-switch mb-0" id="randomizeOrientationGroup">
                       <input
                         class="form-check-input"
                         type="checkbox"
                         id="randomizeOrientation"
                         checked
                       />
-                      <label class="form-check-label" for="randomizeOrientation">Randomize 3rd comm orientation</label>
+                      <label class="form-check-label" for="randomizeOrientation">Randomize orientation</label>
+                    </div>
+                    <div class="form-check form-switch mb-0" id="shiftCycleGroup">
+                      <input
+                        class="form-check-input"
+                        type="checkbox"
+                        id="shiftCycle"
+                        checked
+                      />
+                      <label class="form-check-label" for="shiftCycle">Shift sequence</label>
                     </div>
                   </div>
                 </div>
 
-                <div class="col-md-6">
-                  <label for="count" class="form-label">Letters to generate</label>
-                  <input id="count" type="number" class="form-control" min="0" step="1" value="6" />
-                </div>
-
-                <div class="col-md-6">
-                  <label for="buffer" class="form-label">Buffer letter</label>
-                  <select id="buffer" class="form-select"></select>
-                </div>
-
                 <div class="col-12">
-                  <label for="scheme" class="form-label">Letter scheme</label>
+                  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <label for="scheme" class="form-label mb-0">Letter scheme</label>
+                    <div class="d-flex gap-2 align-items-center">
+                      <select id="schemePresetSelect" class="form-select form-select-sm w-auto">
+                        <option value="Speffz">Speffz</option>
+                        <option value="Nam">Nam</option>
+                      </select>
+                      <button
+                        type="button"
+                        class="btn btn-sm btn-outline-secondary"
+                        id="applySchemePresetBtn"
+                      >
+                        Apply preset
+                      </button>
+                    </div>
+                  </div>
                   <textarea
                     id="scheme"
                     class="form-control"
@@ -90,8 +178,13 @@
                 </div>
 
                 <div class="col-12">
+                  <label for="buffer" class="form-label">Buffer letter</label>
+                  <select id="buffer" class="form-select"></select>
+                </div>
+
+                <div class="col-12">
                   <label for="requiredPairs" class="form-label d-flex justify-content-between align-items-center gap-3">
-                    <span>Guaranteed letter pairs</span>
+                    <span>Practice letter pairs</span>
                     <span class="form-check form-switch mb-0">
                       <input
                         class="form-check-input"
@@ -106,26 +199,36 @@
                     id="requiredPairs"
                     class="form-control"
                     type="text"
-                    placeholder="Example: AB CD EF"
                     spellcheck="false"
                   />
                 </div>
 
                 <div class="col-12">
-                  <button type="submit" class="btn btn-primary w-100" id="generateBtn">Generate (Space or Enter)</button>
-
+                  <button type="button" class="btn btn-primary w-100" id="startBtn">Start</button>
                 </div>
               </form>
 
               <div class="alert mt-4 d-none" id="errorBox"></div>
 
-              <section class="mt-4 d-none" id="results">
-                <h2 class="h5" id="lettersHeading"></h2>
-                <div id="pairGrid" class="d-flex flex-wrap gap-2"></div>
-              </section>
             </div>
           </div>
         </div>
+      </div>
+    </div>
+
+    <div id="focusOverlay" class="focus-overlay d-none" role="dialog" aria-modal="true">
+      <div class="focus-overlay-content">
+        <div class="focus-controls mb-4">
+          <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" type="button" id="focusCopyBtn">Copy</button>
+            <button class="btn btn-outline-primary" type="button" id="focusNextBtn">New Case</button>
+            <button class="btn btn-outline-danger" type="button" id="exitFocusBtn">Exit</button>
+          </div>
+        </div>
+        <div id="focusPairs" class="focus-pairs"></div>
+        <p class="text-secondary mt-4 mb-0 small focus-instructions">
+          Swipe horizontally, press Space/Enter, or tap New Case for another set.
+        </p>
       </div>
     </div>
 
